@@ -7,6 +7,7 @@ CREATE TABLE `torcoromabd`.`usuario` (
   `contrasena` VARCHAR(100) NOT NULL,
   `cedula` VARCHAR(100) NOT NULL,
   `fechaExpedicion` DATE NOT NULL,
+  `nombre` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`IDusuario`));
 
 CREATE TABLE `torcoromabd`.`partida` (

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { pool } from '../db.js'
-import { postUsuarios } from '../controllers/index.controllers.js'
+import { postUsuarios, loginUsuarios } from '../controllers/index.controllers.js'
 
 const router = Router()
 
@@ -10,5 +10,7 @@ router.get('/ping', async (req, res) => {
 });
 
 router.post('/insertarUsuario', postUsuarios)
+
+router.post('/loginUsuarios', loginUsuarios)
 
 export default router
