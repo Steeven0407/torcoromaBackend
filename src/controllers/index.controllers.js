@@ -1,7 +1,10 @@
-import { pool } from "../db.js";
+import { pool, } from "../db.js";
+import { SECRET } from '../config.js'
 import databaseError from "../middlewares/error.js";
 import pkg from 'bcrypt';
+import jwt from 'jsonwebtoken';
 const bcrypt = pkg;
+
 
 
 export const postUsuarios = async (req, res) => {
@@ -61,13 +64,17 @@ export const loginUsuarios = async (req, res) => {
         const [DatosBd] = await pool.query('SELECT * FROM usuario WHERE usuario = ?', [usuario])
         const valido = bcrypt.compareSync(contrasena, DatosBd[0].contrasena)
 
-
+        const token = jwt.sign({ id: DatosBd[0].IDusuario, username: DatosBd[0].usuario }, SECRET, {
+            expiresIn: '1h'
+        })
 
         if (valido) {
             res.status(200).json({
                 message: "Usuario encontrado",
-                respuesta: usuario
+                usuario: usuario,
+                token: token
             })
+
         } else {
             res.status(404).json({
                 message: "Contraseña no valida"
