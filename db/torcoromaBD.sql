@@ -11,7 +11,7 @@ CREATE TABLE `torcoromabd`.`usuario` (
   PRIMARY KEY (`IDusuario`));
 
 CREATE TABLE `torcoromabd`.`partida` (
-    IDpartida INTEGER(100) PRIMARY KEY,
+    IDpartida INTEGER(100) PRIMARY KEY AUTO_INCREMENT,
     libro INTEGER(100),
     folio INTEGER(100),
     numero INTEGER(100),
@@ -21,7 +21,7 @@ CREATE TABLE `torcoromabd`.`partida` (
 );
 
 CREATE TABLE `torcoromabd`.`Partida_de_matrimonio`(
-    IDmatrimonio INTEGER(100) PRIMARY KEY,
+    IDmatrimonio INTEGER(100) PRIMARY KEY AUTO_INCREMENT,
     idPartida INTEGER(100),
     nombre_esposo VARCHAR(300),
     nombre_esposa VARCHAR(300),

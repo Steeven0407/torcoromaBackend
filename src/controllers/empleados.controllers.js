@@ -1,1 +1,0 @@
-export const getPruebaEmpleados = (req, res) => res.send("prueba de employees")

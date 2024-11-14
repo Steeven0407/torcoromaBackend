@@ -1,12 +1,12 @@
 import express from 'express'
-import empleados from './routes/employes.routes.js'
+import partidas from './routes/partidas.routes.js'
 import index from './routes/index.routes.js'
 const app = express()
 
 app.use(express.json())
 
 
-app.use(empleados)
+app.use(partidas)
 app.use(index)
 
 app.use((req, res, next) => {
