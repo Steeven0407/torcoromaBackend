@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { postPartidaGeneral } from '../controllers/partidas.controllers.js'
+import { postPartidaMatrimonio, buscarPartidaMatrimonio } from '../controllers/partidas.controllers.js'
 const router = Router()
 
-router.post('/postPartidaGeneral', postPartidaGeneral);
+router.post('/postPartidaMatrimonio', postPartidaMatrimonio);
+router.post('/buscarPartidaMatrimonio', buscarPartidaMatrimonio);
 
 export default router
