@@ -161,6 +161,15 @@ export const postPartidaMatrimonio = async (req, res) => {
 
 //Endpoints de busqueda
 
+
+/*
+ejemplo de body:
+{
+"nombre_esposo":"Juan Pérez",
+"nombre_esposa":"María caceres",
+"dia_matrimonio":"2024-11-15"
+}
+*/
 export const buscarPartidaMatrimonio = async (req, res) => {
     try {
         const { nombre_esposo, nombre_esposa, dia_matrimonio } = req.body
