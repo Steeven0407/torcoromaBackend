@@ -196,3 +196,72 @@ export const buscarPartidaMatrimonio = async (req, res) => {
         return res.status(500).json({ message: dbError.message });
     }
 }
+
+/*
+ejemplo de body:
+{
+"nombre_Bautizado":"Juan Pérez"
+
+}
+*/
+export const buscarPartidaBautismo = async (req, res) => {
+    try {
+        const { nombre_Bautizado } = req.body
+
+        const [result] = await pool.query(`SELECT * FROM partidaBautismo WHERE nombre_Bautizado = ? `, [nombre_Bautizado])
+
+        if (result.length > 0) {
+            res.status(200).json({
+                message: "Se encontro una partida en el sistema",
+                resultado: result
+            })
+        } else {
+            res.status(404).json({
+                message: "No se encontro ninguna partida en el sistema"
+            })
+        }
+
+    } catch (error) {
+        console.error('Error al subir la partida:', error);
+        // Manejo genérico de otros errores de base de datos
+        const dbError = new databaseError(
+            "Error interno del servidor al realizar la consulta",
+            error.code || error.errno
+        );
+        return res.status(500).json({ message: dbError.message });
+    }
+}
+/*
+ejemplo de body:
+{
+"nombre_Confirmado":"Juan Pérez"
+
+}
+*/
+export const buscarPartidaConfirmacion = async (req, res) => {
+    try {
+        const { nombre_Confirmado } = req.body
+
+        const [result] = await pool.query(`SELECT * FROM partidaconfirmacion WHERE nombre_Confirmado = ? `, [nombre_Confirmado])
+
+        if (result.length > 0) {
+            res.status(200).json({
+                message: "Se encontro una partida en el sistema",
+                resultado: result
+            })
+        } else {
+            res.status(404).json({
+                message: "No se encontro ninguna partida en el sistema"
+            })
+        }
+
+    } catch (error) {
+        console.error('Error al subir la partida:', error);
+        // Manejo genérico de otros errores de base de datos
+        const dbError = new databaseError(
+            "Error interno del servidor al realizar la consulta",
+            error.code || error.errno
+        );
+        return res.status(500).json({ message: dbError.message });
+    }
+}
