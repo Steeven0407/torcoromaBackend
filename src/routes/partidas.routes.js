@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postPartidaMatrimonio, buscarPartidaMatrimonio, buscarPartidaBautismo } from '../controllers/partidas.controllers.js'
+import { postPartidaMatrimonio, buscarPartidaMatrimonio, buscarPartidaBautismo, buscarPartidaConfirmacion } from '../controllers/partidas.controllers.js'
 const router = Router()
 
 router.post('/postPartidaMatrimonio', postPartidaMatrimonio);

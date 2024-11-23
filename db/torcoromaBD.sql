@@ -86,10 +86,10 @@ CREATE TABLE `torcoromabd`.`PartidaConfirmacion` (
 
 CREATE TABLE `torcoromabd`.`Cronograma` (
     ID VARCHAR(100) PRIMARY KEY,
-    nombre INTEGER,
+    nombre VARCHAR(100),
     hora VARCHAR(100),
     fecha DATE,
-    intención VARCHAR(100),
+    intencion VARCHAR(100),
     descripcion VARCHAR(300),
     EventoComunidad INTEGER,
     imagen VARCHAR(100)
