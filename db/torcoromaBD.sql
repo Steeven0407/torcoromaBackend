@@ -20,7 +20,7 @@ CREATE TABLE `torcoromabd`.`partida` (
     FOREIGN KEY (usuarioSubida) REFERENCES usuario(IDusuario)
 );
 
-CREATE TABLE `torcoromabd`.`Partida_de_matrimonio`(
+CREATE TABLE `torcoromabd`.`partida_de_matrimonio`(
     IDmatrimonio INTEGER(100) PRIMARY KEY AUTO_INCREMENT,
     idPartida INTEGER(100),
     nombre_esposo VARCHAR(300),
@@ -45,7 +45,7 @@ CREATE TABLE `torcoromabd`.`Partida_de_matrimonio`(
     FOREIGN KEY (idPartida) REFERENCES Partida(IDpartida)
 );
 
-CREATE TABLE `torcoromabd`.`PartidaBautismo` (
+CREATE TABLE `torcoromabd`.`partidabautismo` (
     IDbautismo INT PRIMARY KEY,
     idPartida INT,
     dia_Bautizo DATE,
@@ -67,7 +67,7 @@ CREATE TABLE `torcoromabd`.`PartidaBautismo` (
     FOREIGN KEY (idPartida) REFERENCES partida(IDpartida)
 );
 
-CREATE TABLE `torcoromabd`.`PartidaConfirmacion` (
+CREATE TABLE `torcoromabd`.`partidaconfirmacion` (
     IDconfirmacion INT PRIMARY KEY,
     idPartida INT,
     nombre_Confirmando VARCHAR(300),
@@ -84,7 +84,7 @@ CREATE TABLE `torcoromabd`.`PartidaConfirmacion` (
     FOREIGN KEY (idPartida) REFERENCES partida(IDpartida)
 );
 
-CREATE TABLE `torcoromabd`.`Cronograma` (
+CREATE TABLE `torcoromabd`.`cronograma` (
     ID VARCHAR(100) PRIMARY KEY,
     nombre VARCHAR(100),
     hora VARCHAR(100),
@@ -95,7 +95,7 @@ CREATE TABLE `torcoromabd`.`Cronograma` (
     imagen VARCHAR(100)
 );
 
-CREATE TABLE `torcoromabd`.`GrupoParroquiales` (
+CREATE TABLE `torcoromabd`.`grupoparroquiales` (
     Documento INTEGER PRIMARY KEY,
     coordinador VARCHAR(100),
     hora VARCHAR(100),
