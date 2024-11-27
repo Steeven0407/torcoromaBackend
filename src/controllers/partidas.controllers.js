@@ -40,7 +40,6 @@ export const postPartidaMatrimonio = async (req, res) => {
         const {
             libro,
             folio,
-            numero,
             usuarioSubida,
             tipo,
             nombre_esposo,
@@ -70,8 +69,8 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDpartida, libro, folio, numero, usuarioSubida, tipo) VALUES (?, ?, ?, ?, ?, ?)`,
-                [numero, libro, folio, numero, usuarioSubida, tipo]
+                `INSERT INTO partida (libro, folio, usuarioSubida, tipo) VALUES (?, ?, ?, ?)`,
+                [libro, folio, usuarioSubida, tipo]
             );
 
             // Obtener el ID de la primera inserción
@@ -122,6 +121,260 @@ export const postPartidaMatrimonio = async (req, res) => {
                     Nota_marginal,
                     Fecha_expedicion,
                     Imagen
+                ]
+            );
+
+            // Confirmar transacción
+            await connection.commit();
+            console.log('Transacción completada con éxito.');
+            res.status(200).json({
+                message: "Partida insertada correctamente"
+            })
+
+        } catch (error) {
+            // En caso de error, revertir transacción
+            await connection.rollback();
+            console.error('Error en la transacción, se ha revertido:', error);
+        }
+    } catch (error) {
+        console.error('Error al subir la partida:', error);
+
+        // Aquí capturamos el error específico de clave duplicada.
+        if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
+            const dbError = new databaseError(
+                "El id de la partida ya existe en la base de datos.",
+                error.code || error.errno
+            );
+            return res.status(409).json({ message: dbError.message });
+        }
+
+        // Manejo genérico de otros errores de base de datos
+        const dbError = new databaseError(
+            "Error interno del servidor al realizar la subida",
+            error.code || error.errno
+        );
+        return res.status(500).json({ message: dbError.message });
+    }
+}
+/*
+Ejemplo de body:
+{
+    "libro": 3121,
+    "folio": 12355,
+    "usuarioSubida": 1,
+    "tipo": "Confirmación",
+    "nombre_Confirmado": "Ana Gomez",
+    "parroquia": "Parroquia Santa Maria",
+    "fecha_Confirmacion": "2023-11-01",
+    "edad": 15,
+    "lugar_bautizo": "Parroquia San Pedro",
+    "nombre_madre": "Laura Martinez",
+    "nombre_padre": "Juan Gomez",
+    "monseñor": "Monseñor Carlos",
+    "nota_Marginal": "Nota adicional",
+    "fecha_Expedicion": "2023-11-02",
+    "imagen": "https://example.com/imagen2.jpg"
+}
+*/
+export const postPartidaConfirmacion = async (req, res) => {
+    try {
+        const {
+            libro,
+            folio,
+            usuarioSubida,
+            tipo,
+            nombre_Confirmado,
+            parroquia,
+            fecha_Confirmacion,
+            edad,
+            lugar_bautizo,
+            nombre_madre,
+            nombre_padre,
+            monseñor,
+            nota_Marginal,
+            fecha_Expedicion,
+            imagen
+        } = req.body;
+        const connection = await pool.getConnection();
+        try {
+            // Iniciar la transacción
+            await connection.beginTransaction();
+
+            // Primera consulta: insertar en `partida`
+            const [result] = await connection.query(
+                `INSERT INTO partida (libro, folio, usuarioSubida, tipo) VALUES (?, ?, ?, ?)`,
+                [libro, folio, usuarioSubida, tipo]
+            );
+
+            // Obtener el ID de la primera inserción
+            const idPartida = result.insertId;
+
+            // Segunda consulta: insertar detalles adicionales en `partida`
+            await connection.query(
+                `INSERT INTO partidaconfirmacion (idPartida,
+            nombre_Confirmado,  
+            parroquia,  
+            fecha_Confirmacion,
+            edad,
+            lugar_bautizo,
+            nombre_madre,
+            nombre_padre,
+            monseñor,
+            nota_Marginal,
+            fecha_Expedicion,
+            imagen
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+                    idPartida,
+                    nombre_Confirmado,
+                    parroquia,
+                    fecha_Confirmacion,
+                    edad,
+                    lugar_bautizo,
+                    nombre_madre,
+                    nombre_padre,
+                    monseñor,
+                    nota_Marginal,
+                    fecha_Expedicion,
+                    imagen
+                ]
+            );
+
+            // Confirmar transacción
+            await connection.commit();
+            console.log('Transacción completada con éxito.');
+            res.status(200).json({
+                message: "Partida insertada correctamente"
+            })
+
+        } catch (error) {
+            // En caso de error, revertir transacción
+            await connection.rollback();
+            console.error('Error en la transacción, se ha revertido:', error);
+        }
+    } catch (error) {
+        console.error('Error al subir la partida:', error);
+
+        // Aquí capturamos el error específico de clave duplicada.
+        if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
+            const dbError = new databaseError(
+                "El id de la partida ya existe en la base de datos.",
+                error.code || error.errno
+            );
+            return res.status(409).json({ message: dbError.message });
+        }
+
+        // Manejo genérico de otros errores de base de datos
+        const dbError = new databaseError(
+            "Error interno del servidor al realizar la subida",
+            error.code || error.errno
+        );
+        return res.status(500).json({ message: dbError.message });
+    }
+}
+
+/*
+ejemplo de body:    
+{
+    "libro": 134,
+    "folio":  2883,
+    "usuarioSubida": "1",
+    "tipo": "Bautismo",
+    "dia_Bautizo": "2023-10-01",
+    "nombre_Bautizado": "Juan Perez",
+    "parroquia": "Parroquia San Juan",
+    "parroco": "Padre Miguel",
+    "fecha_Nacimiento": "2023-01-01",
+    "nombre_Papa": "Carlos Perez",
+    "nombre_Mama": "Maria Lopez",
+    "abuelo_Materno": "Jose Lopez",
+    "abuela_Materna": "Ana Martinez",
+    "abuelo_Paterno": "Luis Perez",
+    "abuela_Paterna": "Carmen Garcia",
+    "padrino": "Pedro Sanchez",
+    "madrina": "Lucia Fernandez",
+    "nota_Marginal": "Nota adicional",
+    "fecha_Expedicion": "2023-10-02",
+    "imagen": "https://example.com/imagen.jpg"
+}
+*/
+
+export const postPartidaBautismo = async (req, res) => {
+    try {
+        const {
+            libro,
+            folio,
+            usuarioSubida,
+            tipo,
+            dia_Bautizo,
+            nombre_Bautizado,
+            parroquia,
+            parroco,
+            fecha_Nacimiento,
+            nombre_Papa,
+            nombre_Mama,
+            abuelo_Materno,
+            abuela_Materna,
+            abuelo_Paterno,
+            abuela_Paterna,
+            padrino,
+            madrina,
+            nota_Marginal,
+            fecha_Expedicion,
+            imagen
+        } = req.body;
+        const connection = await pool.getConnection();
+        try {
+            // Iniciar la transacción
+            await connection.beginTransaction();
+
+            // Primera consulta: insertar en `partida`
+            const [result] = await connection.query(
+                `INSERT INTO partida (libro, folio, usuarioSubida, tipo) VALUES (?, ?, ?, ?)`,
+                [libro, folio, usuarioSubida, tipo]
+            );
+
+            // Obtener el ID de la primera inserción
+            const idPartida = result.insertId;
+
+            // Segunda consulta: insertar detalles adicionales en `partida`
+            await connection.query(
+                `INSERT INTO partidabautismo (idPartida,
+                dia_Bautizo,
+                nombre_Bautizado,
+                parroquia,
+                parroco,
+                fecha_Nacimiento,
+                nombre_Papa,
+                nombre_Mama,
+                abuelo_Materno,
+                abuela_Materna,
+                abuelo_Paterno,
+                abuela_Paterna,
+                padrino,
+                madrina,
+                nota_Marginal,
+                fecha_Expedicion,
+                imagen
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                [
+                    idPartida,
+                    dia_Bautizo,
+                    nombre_Bautizado,
+                    parroquia,
+                    parroco,
+                    fecha_Nacimiento,
+                    nombre_Papa,
+                    nombre_Mama,
+                    abuelo_Materno,
+                    abuela_Materna,
+                    abuelo_Paterno,
+                    abuela_Paterna,
+                    padrino,
+                    madrina,
+                    nota_Marginal,
+                    fecha_Expedicion,
+                    imagen
                 ]
             );
 

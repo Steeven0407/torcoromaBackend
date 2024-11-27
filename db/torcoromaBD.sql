@@ -14,9 +14,8 @@ CREATE TABLE `torcoromabd`.`partida` (
     IDpartida INTEGER(100) PRIMARY KEY AUTO_INCREMENT,
     libro INTEGER(100),
     folio INTEGER(100),
-    numero INTEGER(100),
     usuarioSubida INTEGER(100),
-    tipo INTEGER(100),
+    tipo VARCHAR(100),
     FOREIGN KEY (usuarioSubida) REFERENCES usuario(IDusuario)
 );
 
@@ -46,7 +45,7 @@ CREATE TABLE `torcoromabd`.`partida_de_matrimonio`(
 );
 
 CREATE TABLE `torcoromabd`.`partidabautismo` (
-    IDbautismo INT PRIMARY KEY,
+    IDbautismo INT PRIMARY KEY AUTO_INCREMENT,
     idPartida INT,
     dia_Bautizo DATE,
     nombre_Bautizado VARCHAR(300),
@@ -68,9 +67,9 @@ CREATE TABLE `torcoromabd`.`partidabautismo` (
 );
 
 CREATE TABLE `torcoromabd`.`partidaconfirmacion` (
-    IDconfirmacion INT PRIMARY KEY,
+    IDconfirmacion INT PRIMARY KEY AUTO_INCREMENT,
     idPartida INT,
-    nombre_Confirmando VARCHAR(300),
+    nombre_Confirmado VARCHAR(300),
     parroquia VARCHAR(300),
     fecha_Confirmacion DATE,
     edad INT,
