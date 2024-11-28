@@ -9,6 +9,7 @@ const bcrypt = pkg;
 /*
 Ejemplo de body:
 {
+    "IDPartida": 156231,
     "libro": 123,
     "folio": 31245,
     "numero": 2134,
@@ -38,6 +39,7 @@ Ejemplo de body:
 export const postPartidaMatrimonio = async (req, res) => {
     try {
         const {
+            IDPartida,
             libro,
             folio,
             usuarioSubida,
@@ -69,17 +71,16 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (libro, folio, usuarioSubida, tipo) VALUES (?, ?, ?, ?)`,
-                [libro, folio, usuarioSubida, tipo]
+                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                [IDPartida, libro, folio, usuarioSubida, tipo]
             );
 
-            // Obtener el ID de la primera inserción
-            const idPartida = result.insertId;
+
 
             // Segunda consulta: insertar detalles adicionales en `partida`
             await connection.query(
                 `INSERT INTO Partida_de_matrimonio (
-                    idPartida, 
+                    IDmatrimonio, 
                     nombre_esposo, 
                     nombre_esposa, 
                     parroquia, 
@@ -101,7 +102,7 @@ export const postPartidaMatrimonio = async (req, res) => {
                     Imagen
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    idPartida,
+                    IDPartida,
                     nombre_esposo,
                     nombre_esposa,
                     parroquia,
@@ -159,6 +160,7 @@ export const postPartidaMatrimonio = async (req, res) => {
 /*
 Ejemplo de body:
 {
+    "IDPartida": 123,
     "libro": 3121,
     "folio": 12355,
     "usuarioSubida": 1,
@@ -179,6 +181,7 @@ Ejemplo de body:
 export const postPartidaConfirmacion = async (req, res) => {
     try {
         const {
+            IDPartida,
             libro,
             folio,
             usuarioSubida,
@@ -202,16 +205,13 @@ export const postPartidaConfirmacion = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (libro, folio, usuarioSubida, tipo) VALUES (?, ?, ?, ?)`,
-                [libro, folio, usuarioSubida, tipo]
+                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                [IDPartida, libro, folio, usuarioSubida, tipo]
             );
-
-            // Obtener el ID de la primera inserción
-            const idPartida = result.insertId;
 
             // Segunda consulta: insertar detalles adicionales en `partida`
             await connection.query(
-                `INSERT INTO partidaconfirmacion (idPartida,
+                `INSERT INTO partidaconfirmacion (IDconfirmacion,
             nombre_Confirmado,  
             parroquia,  
             fecha_Confirmacion,
@@ -225,7 +225,7 @@ export const postPartidaConfirmacion = async (req, res) => {
             imagen
                 ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
                 [
-                    idPartida,
+                    IDPartida,
                     nombre_Confirmado,
                     parroquia,
                     fecha_Confirmacion,
@@ -276,6 +276,7 @@ export const postPartidaConfirmacion = async (req, res) => {
 /*
 ejemplo de body:    
 {
+    "IDPartida": 512551,
     "libro": 134,
     "folio":  2883,
     "usuarioSubida": "1",
@@ -302,6 +303,7 @@ ejemplo de body:
 export const postPartidaBautismo = async (req, res) => {
     try {
         const {
+            IDPartida,
             libro,
             folio,
             usuarioSubida,
@@ -330,16 +332,14 @@ export const postPartidaBautismo = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (libro, folio, usuarioSubida, tipo) VALUES (?, ?, ?, ?)`,
-                [libro, folio, usuarioSubida, tipo]
+                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                [IDPartida, libro, folio, usuarioSubida, tipo]
             );
 
-            // Obtener el ID de la primera inserción
-            const idPartida = result.insertId;
 
             // Segunda consulta: insertar detalles adicionales en `partida`
             await connection.query(
-                `INSERT INTO partidabautismo (idPartida,
+                `INSERT INTO partidabautismo (IDbautismo,
                 dia_Bautizo,
                 nombre_Bautizado,
                 parroquia,
@@ -358,7 +358,7 @@ export const postPartidaBautismo = async (req, res) => {
                 imagen
                 ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
                 [
-                    idPartida,
+                    IDPartida,
                     dia_Bautizo,
                     nombre_Bautizado,
                     parroquia,
@@ -454,7 +454,6 @@ export const buscarPartidaMatrimonio = async (req, res) => {
 ejemplo de body:
 {
 "nombre_Bautizado":"Juan Pérez"
-
 }
 */
 export const buscarPartidaBautismo = async (req, res) => {
@@ -488,7 +487,6 @@ export const buscarPartidaBautismo = async (req, res) => {
 ejemplo de body:
 {
 "nombre_Confirmado":"Juan Pérez"
-
 }
 */
 export const buscarPartidaConfirmacion = async (req, res) => {
