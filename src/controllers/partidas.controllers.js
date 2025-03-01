@@ -903,3 +903,155 @@ export const updatePartidaBautismo = async (req, res) => {
         res.status(500).json({ message: "Error interno del servidor." });
     }
 };
+
+
+//endpoints de eliminar partidas
+/*
+    {
+IDpartida: 123	
+    }
+*/
+export const deletePartidaMatrimonio = async (req, res) => {
+    try {
+        const { IDPartida } = req.body;
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Verificar si la partida existe
+            const [existing] = await connection.query(
+                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            if (existing.length === 0) {
+                await connection.release();
+                return res.status(404).json({ message: "La partida no existe." });
+            }
+
+            // Eliminar datos en `Partida_de_matrimonio`
+            await connection.query(
+                `DELETE FROM Partida_de_matrimonio WHERE IDmatrimonio = ?`,
+                [IDPartida]
+            );
+
+            // Eliminar datos en `partida`
+            await connection.query(
+                `DELETE FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            await connection.commit();
+            res.status(200).json({ message: "Partida eliminada correctamente." });
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la transacción, se ha revertido:", error);
+            res.status(500).json({ message: "Error interno al eliminar la partida." });
+        } finally {
+            await connection.release();
+        }
+    } catch (error) {
+        console.error("Error al eliminar la partida:", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
+
+/*
+    {
+IDpartida: 123	
+    }
+*/
+export const deletePartidaConfirmacion = async (req, res) => {
+    try {
+        const { IDPartida } = req.body;
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Verificar si la partida existe
+            const [existing] = await connection.query(
+                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            if (existing.length === 0) {
+                await connection.release();
+                return res.status(404).json({ message: "La partida no existe." });
+            }
+
+            // Eliminar datos en `partidaconfirmacion`
+            await connection.query(
+                `DELETE FROM partidaconfirmacion WHERE IDconfirmacion = ?`,
+                [IDPartida]
+            );
+
+            // Eliminar datos en `partida`
+            await connection.query(
+                `DELETE FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            await connection.commit();
+            res.status(200).json({ message: "Partida de confirmación eliminada correctamente." });
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la transacción, se ha revertido:", error);
+            res.status(500).json({ message: "Error interno al eliminar la partida de confirmación." });
+        } finally {
+            await connection.release();
+        }
+    } catch (error) {
+        console.error("Error al eliminar la partida de confirmación:", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
+
+/*
+    {
+IDpartida: 123	
+    }
+*/
+export const deletePartidaBautismo = async (req, res) => {
+    try {
+        const { IDPartida } = req.body;
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Verificar si la partida existe
+            const [existing] = await connection.query(
+                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            if (existing.length === 0) {
+                await connection.release();
+                return res.status(404).json({ message: "La partida no existe." });
+            }
+
+            // Eliminar datos en `partidabautismo`
+            await connection.query(
+                `DELETE FROM partidabautismo WHERE IDbautismo = ?`,
+                [IDPartida]
+            );
+
+            // Eliminar datos en `partida`
+            await connection.query(
+                `DELETE FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            await connection.commit();
+            res.status(200).json({ message: "Partida de bautismo eliminada correctamente." });
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la transacción, se ha revertido:", error);
+            res.status(500).json({ message: "Error interno al eliminar la partida de bautismo." });
+        } finally {
+            await connection.release();
+        }
+    } catch (error) {
+        console.error("Error al eliminar la partida de bautismo:", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
