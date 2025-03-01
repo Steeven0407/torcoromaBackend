@@ -516,3 +516,390 @@ export const buscarPartidaConfirmacion = async (req, res) => {
         return res.status(500).json({ message: dbError.message });
     }
 }
+
+
+
+//endpoint de actualizacion 
+
+/*
+Ejemplo de body:
+{
+    "IDPartida": 156231,
+    "libro": 123,
+    "folio": 31245,
+    "numero": 2134,
+    "usuarioSubida": 1,
+    "tipo": 1,
+    "nombre_esposo": "Juan Pérez",
+    "nombre_esposa": "María López",
+    "parroquia": "Parroquia San José",
+    "dia_matrimonio": "2024-11-15",
+    "presbitero": "Padre Francisco González",
+    "nombre_padre_esposo": "Carlos Pérez",
+    "nombre_madre_esposo": "Ana Martínez",
+    "lugar_bautizo_esposo": "Iglesia La Merced",
+    "ciudad_bautizo_esposo": "Guatemala",
+    "fecha_bautizo_esposo": "1990-05-20",
+    "nombre_padre_esposa": "Luis López",
+    "nombre_madre_esposa": "Rosa Díaz",
+    "lugar_bautizo_esposa": "Catedral Metropolitana",
+    "ciudad_bautizo_esposa": "Ciudad de México",
+    "fecha_bautizo_esposa": "1992-07-14",
+    "Testigo": "Pedro Hernández",
+    "Nota_marginal": 1,
+    "Fecha_expedicion": "2024-11-18",
+    "Imagen": "https://example.com/images/acta_matrimonio.jpg"
+}
+*/
+export const updatePartidaMatrimonio = async (req, res) => {
+    try {
+        const {
+            IDPartida,
+            libro,
+            folio,
+            usuarioSubida,
+            tipo,
+            nombre_esposo,
+            nombre_esposa,
+            parroquia,
+            dia_matrimonio,
+            presbitero,
+            nombre_padre_esposo,
+            nombre_madre_esposo,
+            lugar_bautizo_esposo,
+            ciudad_bautizo_esposo,
+            fecha_bautizo_esposo,
+            nombre_padre_esposa,
+            nombre_madre_esposa,
+            lugar_bautizo_esposa,
+            ciudad_bautizo_esposa,
+            fecha_bautizo_esposa,
+            Testigo,
+            Nota_marginal,
+            Fecha_expedicion,
+            Imagen
+        } = req.body;
+
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Verificar si la partida existe
+            const [existing] = await connection.query(
+                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            if (existing.length === 0) {
+                await connection.release();
+                return res.status(404).json({ message: "La partida no existe." });
+            }
+
+            // Actualizar datos en `partida`
+            await connection.query(
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                [libro, folio, usuarioSubida, tipo, IDPartida]
+            );
+
+            // Actualizar datos en `Partida_de_matrimonio`
+            await connection.query(
+                `UPDATE Partida_de_matrimonio SET 
+                    nombre_esposo = ?, 
+                    nombre_esposa = ?, 
+                    parroquia = ?, 
+                    dia_matrimonio = ?, 
+                    presbitero = ?, 
+                    nombre_padre_esposo = ?, 
+                    nombre_madre_esposo = ?, 
+                    lugar_bautizo_esposo = ?, 
+                    ciudad_bautizo_esposo = ?, 
+                    fecha_bautizo_esposo = ?, 
+                    nombre_padre_esposa = ?, 
+                    nombre_madre_esposa = ?, 
+                    lugar_bautizo_esposa = ?, 
+                    ciudad_bautizo_esposa = ?, 
+                    fecha_bautizo_esposa = ?, 
+                    Testigo = ?, 
+                    Nota_marginal = ?, 
+                    Fecha_expedicion = ?, 
+                    Imagen = ?
+                WHERE IDmatrimonio = ?`,
+                [
+                    nombre_esposo,
+                    nombre_esposa,
+                    parroquia,
+                    dia_matrimonio,
+                    presbitero,
+                    nombre_padre_esposo,
+                    nombre_madre_esposo,
+                    lugar_bautizo_esposo,
+                    ciudad_bautizo_esposo,
+                    fecha_bautizo_esposo,
+                    nombre_padre_esposa,
+                    nombre_madre_esposa,
+                    lugar_bautizo_esposa,
+                    ciudad_bautizo_esposa,
+                    fecha_bautizo_esposa,
+                    Testigo,
+                    Nota_marginal,
+                    Fecha_expedicion,
+                    Imagen,
+                    IDPartida
+                ]
+            );
+
+            await connection.commit();
+            res.status(200).json({ message: "Partida actualizada correctamente." });
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la transacción, se ha revertido:", error);
+            res.status(500).json({ message: "Error interno al actualizar la partida." });
+        } finally {
+            await connection.release();
+        }
+    } catch (error) {
+        console.error("Error al actualizar la partida:", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
+
+
+
+/*
+Ejemplo de body:
+{
+    "IDPartida": 123,
+    "libro": 3121,
+    "folio": 12355,
+    "usuarioSubida": 1,
+    "tipo": "Confirmación",
+    "nombre_Confirmado": "Ana Gomez",
+    "parroquia": "Parroquia Santa Maria",
+    "fecha_Confirmacion": "2023-11-01",
+    "edad": 15,
+    "lugar_bautizo": "Parroquia San Pedro",
+    "nombre_madre": "Laura Martinez",
+    "nombre_padre": "Juan Gomez",
+    "monseñor": "Monseñor Carlos",
+    "nota_Marginal": "Nota adicional",
+    "fecha_Expedicion": "2023-11-02",
+    "imagen": "https://example.com/imagen2.jpg"
+}
+*/
+export const updatePartidaConfirmacion = async (req, res) => {
+    try {
+        const {
+            IDPartida,
+            libro,
+            folio,
+            usuarioSubida,
+            tipo,
+            nombre_Confirmado,
+            parroquia,
+            fecha_Confirmacion,
+            edad,
+            lugar_bautizo,
+            nombre_madre,
+            nombre_padre,
+            monseñor,
+            nota_Marginal,
+            fecha_Expedicion,
+            imagen
+        } = req.body;
+
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Verificar si la partida existe
+            const [existing] = await connection.query(
+                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            if (existing.length === 0) {
+                await connection.release();
+                return res.status(404).json({ message: "La partida no existe." });
+            }
+
+            // Actualizar datos en `partida`
+            await connection.query(
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                [libro, folio, usuarioSubida, tipo, IDPartida]
+            );
+
+            // Actualizar datos en `partidaconfirmacion`
+            await connection.query(
+                `UPDATE partidaconfirmacion SET 
+                    nombre_Confirmado = ?,
+                    parroquia = ?,
+                    fecha_Confirmacion = ?,
+                    edad = ?,
+                    lugar_bautizo = ?,
+                    nombre_madre = ?,
+                    nombre_padre = ?,
+                    monseñor = ?,
+                    nota_Marginal = ?,
+                    fecha_Expedicion = ?,
+                    imagen = ?
+                WHERE IDconfirmacion = ?`,
+                [
+                    nombre_Confirmado,
+                    parroquia,
+                    fecha_Confirmacion,
+                    edad,
+                    lugar_bautizo,
+                    nombre_madre,
+                    nombre_padre,
+                    monseñor,
+                    nota_Marginal,
+                    fecha_Expedicion,
+                    imagen,
+                    IDPartida
+                ]
+            );
+
+            await connection.commit();
+            res.status(200).json({ message: "Partida de confirmación actualizada correctamente." });
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la transacción, se ha revertido:", error);
+            res.status(500).json({ message: "Error interno al actualizar la partida de confirmación." });
+        } finally {
+            await connection.release();
+        }
+    } catch (error) {
+        console.error("Error al actualizar la partida de confirmación:", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
+
+/*
+ejemplo de body:    
+{
+    "IDPartida": 512551,
+    "libro": 134,
+    "folio":  2883,
+    "usuarioSubida": "1",
+    "tipo": "Bautismo",
+    "dia_Bautizo": "2023-10-01",
+    "nombre_Bautizado": "Juan Perez",
+    "parroquia": "Parroquia San Juan",
+    "parroco": "Padre Miguel",
+    "fecha_Nacimiento": "2023-01-01",
+    "nombre_Papa": "Carlos Perez",
+    "nombre_Mama": "Maria Lopez",
+    "abuelo_Materno": "Jose Lopez",
+    "abuela_Materna": "Ana Martinez",
+    "abuelo_Paterno": "Luis Perez",
+    "abuela_Paterna": "Carmen Garcia",
+    "padrino": "Pedro Sanchez",
+    "madrina": "Lucia Fernandez",
+    "nota_Marginal": "Nota adicional",
+    "fecha_Expedicion": "2023-10-02",
+    "imagen": "https://example.com/imagen.jpg"
+}
+*/
+
+export const updatePartidaBautismo = async (req, res) => {
+    try {
+        const {
+            IDPartida,
+            libro,
+            folio,
+            usuarioSubida,
+            tipo,
+            dia_Bautizo,
+            nombre_Bautizado,
+            parroquia,
+            parroco,
+            fecha_Nacimiento,
+            nombre_Papa,
+            nombre_Mama,
+            abuelo_Materno,
+            abuela_Materna,
+            abuelo_Paterno,
+            abuela_Paterna,
+            padrino,
+            madrina,
+            nota_Marginal,
+            fecha_Expedicion,
+            imagen
+        } = req.body;
+
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            // Verificar si la partida existe
+            const [existing] = await connection.query(
+                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                [IDPartida]
+            );
+
+            if (existing.length === 0) {
+                await connection.release();
+                return res.status(404).json({ message: "La partida no existe." });
+            }
+
+            // Actualizar datos en `partida`
+            await connection.query(
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                [libro, folio, usuarioSubida, tipo, IDPartida]
+            );
+
+            // Actualizar datos en `partidabautismo`
+            await connection.query(
+                `UPDATE partidabautismo SET 
+                    dia_Bautizo = ?,
+                    nombre_Bautizado = ?,
+                    parroquia = ?,
+                    parroco = ?,
+                    fecha_Nacimiento = ?,
+                    nombre_Papa = ?,
+                    nombre_Mama = ?,
+                    abuelo_Materno = ?,
+                    abuela_Materna = ?,
+                    abuelo_Paterno = ?,
+                    abuela_Paterna = ?,
+                    padrino = ?,
+                    madrina = ?,
+                    nota_Marginal = ?,
+                    fecha_Expedicion = ?,
+                    imagen = ?
+                WHERE IDbautismo = ?`,
+                [
+                    dia_Bautizo,
+                    nombre_Bautizado,
+                    parroquia,
+                    parroco,
+                    fecha_Nacimiento,
+                    nombre_Papa,
+                    nombre_Mama,
+                    abuelo_Materno,
+                    abuela_Materna,
+                    abuelo_Paterno,
+                    abuela_Paterna,
+                    padrino,
+                    madrina,
+                    nota_Marginal,
+                    fecha_Expedicion,
+                    imagen,
+                    IDPartida
+                ]
+            );
+
+            await connection.commit();
+            res.status(200).json({ message: "Partida de bautismo actualizada correctamente." });
+        } catch (error) {
+            await connection.rollback();
+            console.error("Error en la transacción, se ha revertido:", error);
+            res.status(500).json({ message: "Error interno al actualizar la partida de bautismo." });
+        } finally {
+            await connection.release();
+        }
+    } catch (error) {
+        console.error("Error al actualizar la partida de bautismo:", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
