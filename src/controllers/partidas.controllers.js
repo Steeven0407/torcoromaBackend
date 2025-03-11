@@ -431,7 +431,8 @@ export const buscarPartidaMatrimonio = async (req, res) => {
 
         if (result.length > 0) {
             res.status(200).json({
-                message: "Se encontro una partida en el sistema"
+                message: "Se encontro una partida en el sistema",
+                resultado: result
             })
         } else {
             res.status(404).json({
@@ -1014,6 +1015,7 @@ IDpartida: 123
 export const deletePartidaBautismo = async (req, res) => {
     try {
         const { IDPartida } = req.body;
+        console.log(req.body)
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
