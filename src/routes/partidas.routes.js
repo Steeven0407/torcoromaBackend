@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postPartidaMatrimonio, buscarPartidaMatrimonio, buscarPartidaBautismo, buscarPartidaConfirmacion, postPartidaBautismo, postPartidaConfirmacion, updatePartidaMatrimonio, updatePartidaConfirmacion, updatePartidaBautismo, deletePartidaMatrimonio, deletePartidaConfirmacion, deletePartidaBautismo } from '../controllers/partidas.controllers.js'
+import { postPartidaMatrimonio, buscarPartidaMatrimonio, buscarPartidaBautismo, buscarPartidaConfirmacion, postPartidaBautismo, postPartidaConfirmacion, updatePartidaMatrimonio, updatePartidaConfirmacion, updatePartidaBautismo, deletePartidaMatrimonio, deletePartidaConfirmacion, deletePartidaBautismo, buscarPartidaPorID } from '../controllers/partidas.controllers.js'
 const router = Router()
 
 router.post('/postPartidaMatrimonio', postPartidaMatrimonio);//Subir partida de matrimonio
@@ -14,5 +14,6 @@ router.put('/updatePartidaBautismo', updatePartidaBautismo);
 router.delete('/deletePartidaMatrimonio', deletePartidaMatrimonio);
 router.delete('/deletePartidaConfirmacion', deletePartidaConfirmacion);
 router.delete('/deletePartidaBautismo', deletePartidaBautismo);
+router.delete('/buscarPartidaPorID', buscarPartidaPorID);
 
 export default router

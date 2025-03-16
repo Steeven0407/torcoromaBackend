@@ -1055,3 +1055,28 @@ export const deletePartidaBautismo = async (req, res) => {
         res.status(500).json({ message: "Error interno del servidor." });
     }
 };
+
+
+//endpoints de obtener partidas
+export const buscarPartidaPorID = async (req, res) => {
+    try {
+        const { IDPartida } = req.params;
+
+        const [rows] = await pool.query(
+            `SELECT * FROM partida WHERE IDPartida = ?`,
+            [IDPartida]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "No se encontró la partida con el ID proporcionado" });
+        }
+
+        res.status(200).json({
+            message: "Partida encontrada",
+            resultado: rows[0]
+        });
+    } catch (error) {
+        console.error('Error al buscar la partida:', error);
+        return res.status(500).json({ message: "Error interno del servidor al buscar la partida" });
+    }
+};

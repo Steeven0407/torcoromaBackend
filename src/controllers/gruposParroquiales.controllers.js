@@ -179,3 +179,23 @@ export const buscarAgentePastoral = async (req, res) => {
         return res.status(500).json({ message: "Error interno del servidor al buscar el agente de pastoral" });
     }
 };
+
+export const eliminarAgentePastoral = async (req, res) => {
+    try {
+        const { Documento } = req.params;
+
+        const [result] = await pool.query(
+            `DELETE FROM agentes_de_pastoral WHERE Documento = ?`,
+            [Documento]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "No se encontró el agente de pastoral con el documento proporcionado" });
+        }
+
+        res.status(200).json({ message: "Agente de pastoral eliminado exitosamente" });
+    } catch (error) {
+        console.error('Error al eliminar agente de pastoral:', error);
+        return res.status(500).json({ message: "Error interno del servidor al eliminar el agente de pastoral" });
+    }
+};
