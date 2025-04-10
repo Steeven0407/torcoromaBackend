@@ -14,6 +14,6 @@ router.put('/updatePartidaBautismo', updatePartidaBautismo);
 router.delete('/deletePartidaMatrimonio', deletePartidaMatrimonio);
 router.delete('/deletePartidaConfirmacion', deletePartidaConfirmacion);
 router.delete('/deletePartidaBautismo', deletePartidaBautismo);
-router.delete('/buscarPartidaPorID', buscarPartidaPorID);
+router.post('/buscarPartidaPorID', buscarPartidaPorID);
 
 export default router
