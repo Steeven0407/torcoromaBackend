@@ -34,7 +34,8 @@ export const postUsuarios = async (req, res) => {
             respuesta: { usuario, cedula, fechaExpedicion, nombre }
         })
     } catch (error) {
-        console.error('Error al subir usuarios:', error);
+        console.error('🔥 Error al insertar usuario:', error); // <-- Este se verá en Railway Logs
+        res.status(500).json({ error: 'Error al insertar usuario' });
 
         // Aquí capturamos el error específico de clave duplicada.
         if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
