@@ -10,7 +10,7 @@ export const postUsuarios = async (req, res) => {
     try {
         const { usuario, contrasena, cedula, fechaExpedicion, nombre } = req.body
 
-        const [cedulaDoble] = await pool.query('SELECT * FROM usuario WHERE cedula = ?', [cedula])
+        const [cedulaDoble] = await pool.query('SELECT * FROM usuario WHERE cedula= ?', [cedula])
         const [usuarioDoble] = await pool.query('SELECT * FROM usuario WHERE usuario=?', [usuario])
 
         if (cedulaDoble.length > 0) {
