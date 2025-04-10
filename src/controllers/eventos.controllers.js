@@ -1,7 +1,6 @@
 import { pool, } from "../db.js";
 import databaseError from "../middlewares/error.js";
-import pkg from 'bcrypt';
-const bcrypt = pkg;
+import bcrypt from 'bcryptjs';
 
 
 export const buscarNoticia = async (req, res) => {
