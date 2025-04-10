@@ -7,7 +7,10 @@ export const pool = createPool({
     user: DB_USER,
     password: DB_PASSWORD,
     port: DB_PORT,
-    database: DB_DATABASE
+    database: DB_DATABASE,
+    ssl: {
+        rejectUnauthorized: false, // <-- Esto es CLAVE para Railway
+    },
 })
 
 
