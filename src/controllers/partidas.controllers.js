@@ -1061,7 +1061,7 @@ export const deletePartidaBautismo = async (req, res) => {
 //endpoints de obtener partidas
 export const buscarPartidaPorID = async (req, res) => {
     try {
-        const { IDPartida } = req.params;
+        const { IDPartida } = req.body;
 
         const [rows] = await pool.query(
             `SELECT * FROM partida WHERE IDPartida = ?`,
