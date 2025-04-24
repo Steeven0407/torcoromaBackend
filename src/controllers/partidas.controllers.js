@@ -70,7 +70,7 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                `INSERT INTO partida (IDPartida,libro,folio,usuarioSubida,tipo) VALUES (?,?, ?, ?, ?)`,
                 [IDPartida, libro, folio, usuarioSubida, tipo]
             );
 
@@ -78,7 +78,7 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Segunda consulta: insertar detalles adicionales en `partida`
             await connection.query(
-                `INSERT INTO Partida_de_matrimonio (
+                `INSERT INTO partida_de_matrimonio (
                     IDmatrimonio, 
                     nombre_esposo, 
                     nombre_esposa, 
