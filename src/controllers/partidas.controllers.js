@@ -331,7 +331,7 @@ export const postPartidaBautismo = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                `INSERT INTO partida (IDpartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
                 [IDPartida, libro, folio, usuarioSubida, tipo]
             );
 
@@ -586,7 +586,7 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -597,7 +597,7 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
                 [libro, folio, usuarioSubida, tipo, IDPartida]
             );
 
@@ -713,7 +713,7 @@ export const updatePartidaConfirmacion = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -724,7 +724,7 @@ export const updatePartidaConfirmacion = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
                 [libro, folio, usuarioSubida, tipo, IDPartida]
             );
 
@@ -833,7 +833,7 @@ export const updatePartidaBautismo = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -844,7 +844,7 @@ export const updatePartidaBautismo = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
                 [libro, folio, usuarioSubida, tipo, IDPartida]
             );
 
@@ -920,7 +920,7 @@ export const deletePartidaMatrimonio = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDPartida = ?`,
                 [IDPartida]
             );
 
@@ -970,7 +970,7 @@ export const deletePartidaConfirmacion = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -987,7 +987,7 @@ export const deletePartidaConfirmacion = async (req, res) => {
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
+                `DELETE FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -1021,7 +1021,7 @@ export const deletePartidaBautismo = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -1038,7 +1038,7 @@ export const deletePartidaBautismo = async (req, res) => {
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
+                `DELETE FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -1064,7 +1064,7 @@ export const buscarPartidaPorID = async (req, res) => {
         const { IDPartida } = req.body;
 
         const [rows] = await pool.query(
-            `SELECT * FROM partida WHERE IDPartida = ?`,
+            `SELECT * FROM partida WHERE IDpartida = ?`,
             [IDPartida]
         );
 
