@@ -426,7 +426,7 @@ export const buscarPartidaMatrimonio = async (req, res) => {
     try {
         const { nombre_esposo, nombre_esposa, dia_matrimonio } = req.body
 
-        const [result] = await pool.query(`SELECT * FROM Partida_de_matrimonio WHERE nombre_esposo = ? and nombre_esposa = ? and dia_matrimonio = ?`, [nombre_esposo, nombre_esposa, dia_matrimonio])
+        const [result] = await pool.query(`SELECT * FROM partida_de_matrimonio WHERE nombre_esposo = ? and nombre_esposa = ? and dia_matrimonio = ?`, [nombre_esposo, nombre_esposa, dia_matrimonio])
 
         if (result.length > 0) {
             res.status(200).json({
@@ -603,7 +603,7 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Actualizar datos en `Partida_de_matrimonio`
             await connection.query(
-                `UPDATE Partida_de_matrimonio SET 
+                `UPDATE partida_de_matrimonio SET 
                     nombre_esposo = ?, 
                     nombre_esposa = ?, 
                     parroquia = ?, 
@@ -931,7 +931,7 @@ export const deletePartidaMatrimonio = async (req, res) => {
 
             // Eliminar datos en `Partida_de_matrimonio`
             await connection.query(
-                `DELETE FROM Partida_de_matrimonio WHERE IDmatrimonio = ?`,
+                `DELETE FROM partida_de_matrimonio WHERE IDmatrimonio = ?`,
                 [IDPartida]
             );
 
