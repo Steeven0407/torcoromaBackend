@@ -1,7 +1,7 @@
 import { pool, } from "../db.js";
 import { SECRET } from '../config.js'
 import databaseError from "../middlewares/error.js";
-import pkg from 'bcrypt';
+import pkg from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 const bcrypt = pkg;
 

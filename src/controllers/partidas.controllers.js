@@ -1,7 +1,7 @@
 import { pool, } from "../db.js";
 import { SECRET } from '../config.js'
 import databaseError from "../middlewares/error.js";
-import pkg from 'bcrypt';
+import pkg from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query } from "express";
 const bcrypt = pkg;
@@ -9,7 +9,7 @@ const bcrypt = pkg;
 /*
 Ejemplo de body:
 {
-    "IDPartida": 156231,
+    "IDpartida": 156231,
     "libro": 123,
     "folio": 31245,
     "numero": 2134,
@@ -39,7 +39,7 @@ Ejemplo de body:
 export const postPartidaMatrimonio = async (req, res) => {
     try {
         const {
-            IDPartida,
+            IDpartida,
             libro,
             folio,
             usuarioSubida,
@@ -71,8 +71,8 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
-                [IDPartida, libro, folio, usuarioSubida, tipo]
+                `INSERT INTO partida (IDpartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                [IDpartida, libro, folio, usuarioSubida, tipo]
             );
 
 
@@ -102,7 +102,7 @@ export const postPartidaMatrimonio = async (req, res) => {
                     Imagen
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    IDPartida,
+                    IDpartida,
                     nombre_esposo,
                     nombre_esposa,
                     parroquia,
@@ -160,7 +160,7 @@ export const postPartidaMatrimonio = async (req, res) => {
 /*
 Ejemplo de body:
 {
-    "IDPartida": 123,
+    "IDpartida": 123,
     "libro": 3121,
     "folio": 12355,
     "usuarioSubida": 1,
@@ -181,7 +181,7 @@ Ejemplo de body:
 export const postPartidaConfirmacion = async (req, res) => {
     try {
         const {
-            IDPartida,
+            IDpartida,
             libro,
             folio,
             usuarioSubida,
@@ -205,8 +205,8 @@ export const postPartidaConfirmacion = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
-                [IDPartida, libro, folio, usuarioSubida, tipo]
+                `INSERT INTO partida (IDpartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                [IDpartida, libro, folio, usuarioSubida, tipo]
             );
 
             // Segunda consulta: insertar detalles adicionales en `partida`
@@ -225,7 +225,7 @@ export const postPartidaConfirmacion = async (req, res) => {
             imagen
                 ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
                 [
-                    IDPartida,
+                    IDpartida,
                     nombre_Confirmado,
                     parroquia,
                     fecha_Confirmacion,
@@ -276,7 +276,7 @@ export const postPartidaConfirmacion = async (req, res) => {
 /*
 ejemplo de body:    
 {
-    "IDPartida": 512551,
+    "IDpartida": 512551,
     "libro": 134,
     "folio":  2883,
     "usuarioSubida": "1",
@@ -303,7 +303,7 @@ ejemplo de body:
 export const postPartidaBautismo = async (req, res) => {
     try {
         const {
-            IDPartida,
+            IDpartida,
             libro,
             folio,
             usuarioSubida,
@@ -332,8 +332,8 @@ export const postPartidaBautismo = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
-                [IDPartida, libro, folio, usuarioSubida, tipo]
+                `INSERT INTO partida (IDpartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                [IDpartida, libro, folio, usuarioSubida, tipo]
             );
 
 
@@ -358,7 +358,7 @@ export const postPartidaBautismo = async (req, res) => {
                 imagen
                 ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
                 [
-                    IDPartida,
+                    IDpartida,
                     dia_Bautizo,
                     nombre_Bautizado,
                     parroquia,
@@ -525,7 +525,7 @@ export const buscarPartidaConfirmacion = async (req, res) => {
 /*
 Ejemplo de body:
 {
-    "IDPartida": 156231,
+    "IDpartida": 156231,
     "libro": 123,
     "folio": 31245,
     "numero": 2134,
@@ -555,7 +555,7 @@ Ejemplo de body:
 export const updatePartidaMatrimonio = async (req, res) => {
     try {
         const {
-            IDPartida,
+            IDpartida,
             libro,
             folio,
             usuarioSubida,
@@ -587,8 +587,8 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             if (existing.length === 0) {
@@ -598,8 +598,8 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
-                [libro, folio, usuarioSubida, tipo, IDPartida]
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
+                [libro, folio, usuarioSubida, tipo, IDpartida]
             );
 
             // Actualizar datos en `Partida_de_matrimonio`
@@ -645,7 +645,7 @@ export const updatePartidaMatrimonio = async (req, res) => {
                     Nota_marginal,
                     Fecha_expedicion,
                     Imagen,
-                    IDPartida
+                    IDpartida
                 ]
             );
 
@@ -669,7 +669,7 @@ export const updatePartidaMatrimonio = async (req, res) => {
 /*
 Ejemplo de body:
 {
-    "IDPartida": 123,
+    "IDpartida": 123,
     "libro": 3121,
     "folio": 12355,
     "usuarioSubida": 1,
@@ -690,7 +690,7 @@ Ejemplo de body:
 export const updatePartidaConfirmacion = async (req, res) => {
     try {
         const {
-            IDPartida,
+            IDpartida,
             libro,
             folio,
             usuarioSubida,
@@ -714,8 +714,8 @@ export const updatePartidaConfirmacion = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             if (existing.length === 0) {
@@ -725,8 +725,8 @@ export const updatePartidaConfirmacion = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
-                [libro, folio, usuarioSubida, tipo, IDPartida]
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
+                [libro, folio, usuarioSubida, tipo, IDpartida]
             );
 
             // Actualizar datos en `partidaconfirmacion`
@@ -756,7 +756,7 @@ export const updatePartidaConfirmacion = async (req, res) => {
                     nota_Marginal,
                     fecha_Expedicion,
                     imagen,
-                    IDPartida
+                    IDpartida
                 ]
             );
 
@@ -778,7 +778,7 @@ export const updatePartidaConfirmacion = async (req, res) => {
 /*
 ejemplo de body:    
 {
-    "IDPartida": 512551,
+    "IDpartida": 512551,
     "libro": 134,
     "folio":  2883,
     "usuarioSubida": "1",
@@ -805,7 +805,7 @@ ejemplo de body:
 export const updatePartidaBautismo = async (req, res) => {
     try {
         const {
-            IDPartida,
+            IDpartida,
             libro,
             folio,
             usuarioSubida,
@@ -834,8 +834,8 @@ export const updatePartidaBautismo = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             if (existing.length === 0) {
@@ -845,8 +845,8 @@ export const updatePartidaBautismo = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
-                [libro, folio, usuarioSubida, tipo, IDPartida]
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
+                [libro, folio, usuarioSubida, tipo, IDpartida]
             );
 
             // Actualizar datos en `partidabautismo`
@@ -886,7 +886,7 @@ export const updatePartidaBautismo = async (req, res) => {
                     nota_Marginal,
                     fecha_Expedicion,
                     imagen,
-                    IDPartida
+                    IDpartida
                 ]
             );
 
@@ -914,15 +914,15 @@ IDpartida: 123
 */
 export const deletePartidaMatrimonio = async (req, res) => {
     try {
-        const { IDPartida } = req.body;
+        const { IDpartida } = req.body;
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             if (existing.length === 0) {
@@ -933,13 +933,13 @@ export const deletePartidaMatrimonio = async (req, res) => {
             // Eliminar datos en `Partida_de_matrimonio`
             await connection.query(
                 `DELETE FROM Partida_de_matrimonio WHERE IDmatrimonio = ?`,
-                [IDPartida]
+                [IDpartida]
             );
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `DELETE FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             await connection.commit();
@@ -964,15 +964,15 @@ IDpartida: 123
 */
 export const deletePartidaConfirmacion = async (req, res) => {
     try {
-        const { IDPartida } = req.body;
+        const { IDpartida } = req.body;
         const connection = await pool.getConnection();
         try {
             await connection.beginTransaction();
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             if (existing.length === 0) {
@@ -983,13 +983,13 @@ export const deletePartidaConfirmacion = async (req, res) => {
             // Eliminar datos en `partidaconfirmacion`
             await connection.query(
                 `DELETE FROM partidaconfirmacion WHERE IDconfirmacion = ?`,
-                [IDPartida]
+                [IDpartida]
             );
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `DELETE FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             await connection.commit();
@@ -1014,7 +1014,7 @@ IDpartida: 123
 */
 export const deletePartidaBautismo = async (req, res) => {
     try {
-        const { IDPartida } = req.body;
+        const { IDpartida } = req.body;
         console.log(req.body)
         const connection = await pool.getConnection();
         try {
@@ -1022,8 +1022,8 @@ export const deletePartidaBautismo = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             if (existing.length === 0) {
@@ -1034,13 +1034,13 @@ export const deletePartidaBautismo = async (req, res) => {
             // Eliminar datos en `partidabautismo`
             await connection.query(
                 `DELETE FROM partidabautismo WHERE IDbautismo = ?`,
-                [IDPartida]
+                [IDpartida]
             );
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
-                [IDPartida]
+                `DELETE FROM partida WHERE IDpartida = ?`,
+                [IDpartida]
             );
 
             await connection.commit();
