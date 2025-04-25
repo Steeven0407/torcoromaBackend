@@ -99,7 +99,7 @@ export const publicarAgentePastoral = async (req, res) => {
         const { Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen } = req.body
 
         const [data] = await pool.query(
-            `INSERT INTO agentes_de_pastoral (Documento,  nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen) VALUES (?, ?, ?, ?, ?,?,?)`,
+            `INSERT INTO Agentes_de_pastoral (Documento,  nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen) VALUES (?, ?, ?, ?, ?,?,?)`,
             [Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen]
         );
 
@@ -138,7 +138,7 @@ export const editarAgentePastoral = async (req, res) => {
         const { nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen } = req.body;
 
         const [result] = await pool.query(
-            `UPDATE agentes_de_pastoral SET nombre = ?, apellido = ?, grupo = ?, fecha_de_nacimiento = ?, estado = ?, imagen = ? WHERE Documento = ?`,
+            `UPDATE Agentes_de_pastoral SET nombre = ?, apellido = ?, grupo = ?, fecha_de_nacimiento = ?, estado = ?, imagen = ? WHERE Documento = ?`,
             [nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen, Documento]
         );
 
@@ -162,7 +162,7 @@ export const buscarAgentePastoral = async (req, res) => {
         const { Documento } = req.params;
 
         const [rows] = await pool.query(
-            `SELECT * FROM agentes_de_pastoral WHERE Documento = ?`,
+            `SELECT * FROM Agentes_de_pastoral WHERE Documento = ?`,
             [Documento]
         );
 
@@ -177,5 +177,25 @@ export const buscarAgentePastoral = async (req, res) => {
     } catch (error) {
         console.error('Error al buscar agente de pastoral:', error);
         return res.status(500).json({ message: "Error interno del servidor al buscar el agente de pastoral" });
+    }
+};
+
+export const eliminarAgentePastoral = async (req, res) => {
+    try {
+        const { Documento } = req.params;
+
+        const [result] = await pool.query(
+            `DELETE FROM Agentes_de_pastoral WHERE Documento = ?`,
+            [Documento]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "No se encontró el agente de pastoral con el documento proporcionado" });
+        }
+
+        res.status(200).json({ message: "Agente de pastoral eliminado exitosamente" });
+    } catch (error) {
+        console.error('Error al eliminar agente de pastoral:', error);
+        return res.status(500).json({ message: "Error interno del servidor al eliminar el agente de pastoral" });
     }
 };

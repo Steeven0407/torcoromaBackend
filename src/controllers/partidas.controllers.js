@@ -1,10 +1,9 @@
 import { pool, } from "../db.js";
 import { SECRET } from '../config.js'
 import databaseError from "../middlewares/error.js";
-import pkg from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { query } from "express";
-const bcrypt = pkg;
 
 /*
 Ejemplo de body:
@@ -71,7 +70,7 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                `INSERT INTO partida (IDPartida,libro,folio,usuarioSubida,tipo) VALUES (?,?, ?, ?, ?)`,
                 [IDPartida, libro, folio, usuarioSubida, tipo]
             );
 
@@ -79,7 +78,7 @@ export const postPartidaMatrimonio = async (req, res) => {
 
             // Segunda consulta: insertar detalles adicionales en `partida`
             await connection.query(
-                `INSERT INTO Partida_de_matrimonio (
+                `INSERT INTO partida_de_matrimonio (
                     IDmatrimonio, 
                     nombre_esposo, 
                     nombre_esposa, 
@@ -332,7 +331,7 @@ export const postPartidaBautismo = async (req, res) => {
 
             // Primera consulta: insertar en `partida`
             const [result] = await connection.query(
-                `INSERT INTO partida (IDPartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
+                `INSERT INTO partida (IDpartida,libro, folio, usuarioSubida, tipo) VALUES (?,?, ?, ?, ?)`,
                 [IDPartida, libro, folio, usuarioSubida, tipo]
             );
 
@@ -427,7 +426,7 @@ export const buscarPartidaMatrimonio = async (req, res) => {
     try {
         const { nombre_esposo, nombre_esposa, dia_matrimonio } = req.body
 
-        const [result] = await pool.query(`SELECT * FROM Partida_de_matrimonio WHERE nombre_esposo = ? and nombre_esposa = ? and dia_matrimonio = ?`, [nombre_esposo, nombre_esposa, dia_matrimonio])
+        const [result] = await pool.query(`SELECT * FROM partida_de_matrimonio WHERE nombre_esposo = ? and nombre_esposa = ? and dia_matrimonio = ?`, [nombre_esposo, nombre_esposa, dia_matrimonio])
 
         if (result.length > 0) {
             res.status(200).json({
@@ -587,7 +586,7 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -598,13 +597,13 @@ export const updatePartidaMatrimonio = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
                 [libro, folio, usuarioSubida, tipo, IDPartida]
             );
 
             // Actualizar datos en `Partida_de_matrimonio`
             await connection.query(
-                `UPDATE Partida_de_matrimonio SET 
+                `UPDATE partida_de_matrimonio SET 
                     nombre_esposo = ?, 
                     nombre_esposa = ?, 
                     parroquia = ?, 
@@ -714,7 +713,7 @@ export const updatePartidaConfirmacion = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -725,7 +724,7 @@ export const updatePartidaConfirmacion = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
                 [libro, folio, usuarioSubida, tipo, IDPartida]
             );
 
@@ -834,7 +833,7 @@ export const updatePartidaBautismo = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -845,7 +844,7 @@ export const updatePartidaBautismo = async (req, res) => {
 
             // Actualizar datos en `partida`
             await connection.query(
-                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDPartida = ?`,
+                `UPDATE partida SET libro = ?, folio = ?, usuarioSubida = ?, tipo = ? WHERE IDpartida = ?`,
                 [libro, folio, usuarioSubida, tipo, IDPartida]
             );
 
@@ -921,7 +920,7 @@ export const deletePartidaMatrimonio = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDPartida = ?`,
                 [IDPartida]
             );
 
@@ -932,7 +931,7 @@ export const deletePartidaMatrimonio = async (req, res) => {
 
             // Eliminar datos en `Partida_de_matrimonio`
             await connection.query(
-                `DELETE FROM Partida_de_matrimonio WHERE IDmatrimonio = ?`,
+                `DELETE FROM partida_de_matrimonio WHERE IDmatrimonio = ?`,
                 [IDPartida]
             );
 
@@ -971,7 +970,7 @@ export const deletePartidaConfirmacion = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -988,7 +987,7 @@ export const deletePartidaConfirmacion = async (req, res) => {
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
+                `DELETE FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -1022,7 +1021,7 @@ export const deletePartidaBautismo = async (req, res) => {
 
             // Verificar si la partida existe
             const [existing] = await connection.query(
-                `SELECT IDPartida FROM partida WHERE IDPartida = ?`,
+                `SELECT IDpartida FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -1039,7 +1038,7 @@ export const deletePartidaBautismo = async (req, res) => {
 
             // Eliminar datos en `partida`
             await connection.query(
-                `DELETE FROM partida WHERE IDPartida = ?`,
+                `DELETE FROM partida WHERE IDpartida = ?`,
                 [IDPartida]
             );
 
@@ -1055,5 +1054,30 @@ export const deletePartidaBautismo = async (req, res) => {
     } catch (error) {
         console.error("Error al eliminar la partida de bautismo:", error);
         res.status(500).json({ message: "Error interno del servidor." });
+    }
+};
+
+
+//endpoints de obtener partidas
+export const buscarPartidaPorID = async (req, res) => {
+    try {
+        const { IDPartida } = req.body;
+
+        const [rows] = await pool.query(
+            `SELECT * FROM partida WHERE IDpartida = ?`,
+            [IDPartida]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ message: "No se encontró la partida con el ID proporcionado" });
+        }
+
+        res.status(200).json({
+            message: "Partida encontrada",
+            resultado: rows[0]
+        });
+    } catch (error) {
+        console.error('Error al buscar la partida:', error);
+        return res.status(500).json({ message: "Error interno del servidor al buscar la partida" });
     }
 };
