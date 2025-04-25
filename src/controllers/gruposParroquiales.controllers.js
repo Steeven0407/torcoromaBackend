@@ -99,7 +99,7 @@ export const publicarAgentePastoral = async (req, res) => {
         const { Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen } = req.body
 
         const [data] = await pool.query(
-            `INSERT INTO agentes_de_pastoral (Documento,  nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen) VALUES (?, ?, ?, ?, ?,?,?)`,
+            `INSERT INTO Agentes_de_pastoral (Documento,  nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen) VALUES (?, ?, ?, ?, ?,?,?)`,
             [Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen]
         );
 
@@ -138,7 +138,7 @@ export const editarAgentePastoral = async (req, res) => {
         const { nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen } = req.body;
 
         const [result] = await pool.query(
-            `UPDATE agentes_de_pastoral SET nombre = ?, apellido = ?, grupo = ?, fecha_de_nacimiento = ?, estado = ?, imagen = ? WHERE Documento = ?`,
+            `UPDATE Agentes_de_pastoral SET nombre = ?, apellido = ?, grupo = ?, fecha_de_nacimiento = ?, estado = ?, imagen = ? WHERE Documento = ?`,
             [nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen, Documento]
         );
 
@@ -162,7 +162,7 @@ export const buscarAgentePastoral = async (req, res) => {
         const { Documento } = req.params;
 
         const [rows] = await pool.query(
-            `SELECT * FROM agentes_de_pastoral WHERE Documento = ?`,
+            `SELECT * FROM Agentes_de_pastoral WHERE Documento = ?`,
             [Documento]
         );
 
@@ -185,7 +185,7 @@ export const eliminarAgentePastoral = async (req, res) => {
         const { Documento } = req.params;
 
         const [result] = await pool.query(
-            `DELETE FROM agentes_de_pastoral WHERE Documento = ?`,
+            `DELETE FROM Agentes_de_pastoral WHERE Documento = ?`,
             [Documento]
         );
 
