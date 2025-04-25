@@ -1,8 +1,9 @@
 import { pool, } from "../db.js";
 import { SECRET } from '../config.js'
 import databaseError from "../middlewares/error.js";
-import bcrypt from 'bcryptjs';
+import pkg from 'bcrypt';
 import jwt from 'jsonwebtoken';
+const bcrypt = pkg;
 
 
 
@@ -10,7 +11,7 @@ export const postUsuarios = async (req, res) => {
     try {
         const { usuario, contrasena, cedula, fechaExpedicion, nombre } = req.body
 
-        const [cedulaDoble] = await pool.query('SELECT * FROM usuario WHERE cedula= ?', [cedula])
+        const [cedulaDoble] = await pool.query('SELECT * FROM usuario WHERE cedula = ?', [cedula])
         const [usuarioDoble] = await pool.query('SELECT * FROM usuario WHERE usuario=?', [usuario])
 
         if (cedulaDoble.length > 0) {
@@ -34,8 +35,7 @@ export const postUsuarios = async (req, res) => {
             respuesta: { usuario, cedula, fechaExpedicion, nombre }
         })
     } catch (error) {
-        console.error('🔥 Error al insertar usuario:', error); // <-- Este se verá en Railway Logs
-        res.status(500).json({ error: 'Error al insertar usuario' });
+        console.error('Error al subir usuarios:', error);
 
         // Aquí capturamos el error específico de clave duplicada.
         if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
