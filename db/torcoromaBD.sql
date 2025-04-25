@@ -99,6 +99,14 @@ CREATE TABLE `torcoromabd`.`grupoparroquiales` (
     imagen VARCHAR(100)
 );
 
+CREATE TABLE `torcoromabd`.`eventosparroquiales` (
+    id INTEGER PRIMARY KEY,
+    nombre VARCHAR(100),
+    hora VARCHAR(100),
+    descripcion VARCHAR(100),
+    imagen VARCHAR(100)
+);
+
 CREATE TABLE  `torcoromabd`.`Agentes_de_pastoral` (
     Documento INTEGER PRIMARY KEY,
     nombre VARCHAR(100),

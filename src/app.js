@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import db from './db';
 
 dotenv.config();
 
@@ -11,7 +10,7 @@ import gruposParroquiales from './routes/gruposparroquiales.routes.js'
 
 import cors from 'cors'
 import multer from 'multer';
-const cloudinary = require('cloudinary').v2;
+import { v2 as cloudinary } from 'cloudinary';
 
 
 const app = express()
@@ -31,7 +30,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Configuración de multer para almacenar en memoria
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -60,10 +58,8 @@ app.post('/api/eventos', upload.single('imagen'), async (req, res) => {
             (err, results) => {
               if (err) return res.status(500).send(err);
               
-              // Obtener el ID del evento recién insertado
               const id = results.insertId;
               
-              // Devolver el evento completo incluyendo su ID
               res.status(200).send({ 
                 id, 
                 nombre, 
