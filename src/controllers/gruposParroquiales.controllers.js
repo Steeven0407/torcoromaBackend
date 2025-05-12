@@ -1,134 +1,181 @@
-import { pool } from '../db.js';
-import cloudinary from 'cloudinary';
-import databaseError from '../middlewares/error.js'; // Para manejar errores si ya lo usas
+import { pool, } from "../db.js";
+import databaseError from "../middlewares/error.js";
 
-export const crearEvento = async (req, res) => {
-  const { nombre, hora, descripcion } = req.body;
-  const file = req.file;
-
-  if (!file) return res.status(400).send('No se ha subido ninguna imagen');
-
+/*
+ejemplo de body para publicarGrupoParroquial    
+{
+"Documento":12111345,
+ "coordinador": "eugenio derves", 
+ "hora": "12 pm",
+ "lugar_Encuentro": "Salon sur", 
+ "imagen" :"Estoesunlink"
+}
+*/
+export const publicarGrupoParroquial = async (req, res) => {
   try {
-    const result = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: 'image', folder: 'EventosP' },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      uploadStream.end(file.buffer);
-    });
+
+    const { Documento, coordinador, hora, lugar_Encuentro, imagen } = req.body
 
     const [data] = await pool.query(
-      'INSERT INTO eventosparroquiales (nombre, hora, descripcion, imagen) VALUES (?, ?, ?, ?)',
-      [nombre, hora, descripcion, result.secure_url]
+      `INSERT INTO grupoparroquiales (Documento, coordinador, hora, lugar_Encuentro, imagen) VALUES (?, ?, ?, ?, ?)`,
+      [Documento, coordinador, hora, lugar_Encuentro, imagen]
     );
 
     res.status(200).json({
-      id: data.insertId,
-      nombre,
-      hora,
-      descripcion,
-      imagen: result.secure_url,
-      message: 'Evento creado exitosamente'
+      message: "Se ha registrado el grupo parroquial correctamente",
+      data: data[0],
+      resultado: { Documento, coordinador, hora, lugar_Encuentro, imagen }
     });
+
+
   } catch (error) {
-    console.error('Error al crear evento parroquial:', error);
-    const dbError = new databaseError('Error al crear el evento parroquial', error.code || error.errno);
-    res.status(500).json({ message: dbError.message });
-  }
-};
+    console.error('Error al subir grupo parroquial:', error);
 
-export const obtenerEventos = async (req, res) => {
-  try {
-    const [rows] = await pool.query('SELECT * FROM eventosparroquiales');
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error('Error al obtener eventos:', error);
-    res.status(500).json({ message: 'Error al obtener eventos parroquiales' });
-  }
-};
-
-export const obtenerEventoPorId = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const [rows] = await pool.query('SELECT * FROM eventosparroquiales WHERE id = ?', [id]);
-    if (rows.length === 0) return res.status(404).json({ message: 'Evento no encontrado' });
-    res.status(200).json(rows[0]);
-  } catch (error) {
-    console.error('Error al obtener evento por ID:', error);
-    res.status(500).json({ message: 'Error interno al obtener el evento' });
-  }
-};
-
-export const editarEvento = async (req, res) => {
-  const { id } = req.params;
-  const { nombre, hora, descripcion } = req.body;
-  const file = req.file;
-
-  try {
-    if (file) {
-      const result = await new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { resource_type: 'image', folder: 'EventosP' },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        );
-        uploadStream.end(file.buffer);
-      });
-
-      await pool.query(
-        'UPDATE eventosparroquiales SET nombre = ?, hora = ?, descripcion = ?, imagen = ? WHERE id = ?',
-        [nombre, hora, descripcion, result.secure_url, id]
+    // Aquí capturamos el error específico de clave duplicada.
+    if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
+      const dbError = new databaseError(
+        "El documento ya existe en la base de datos.",
+        error.code || error.errno
       );
+      return res.status(409).json({ message: dbError.message });
+    }
 
-      res.status(200).json({
-        id,
-        nombre,
-        hora,
-        descripcion,
-        imagen: result.secure_url,
-        message: 'Evento actualizado exitosamente',
-      });
-    } else {
-      await pool.query(
-        'UPDATE eventosparroquiales SET nombre = ?, hora = ?, descripcion = ? WHERE id = ?',
-        [nombre, hora, descripcion, id]
-      );
+    // Manejo genérico de otros errores de base de datos
+    const dbError = new databaseError(
+      "Error interno del servidor al realizar la consulta",
+      error.code || error.errno
+    );
+    return res.status(500).json({ message: dbError.message });
+  }
+};
 
-      const [rows] = await pool.query('SELECT * FROM eventosparroquiales WHERE id = ?', [id]);
-      if (rows.length === 0) return res.status(404).json({ message: 'Evento no encontrado' });
+export const buscarGrupoParroquial = async (req, res) => {
+  try {
+    const [data] = await pool.query(`SELECT coordinador, hora, lugar_Encuentro, imagen FROM grupoparroquiales`);
 
-      res.status(200).json({
-        ...rows[0],
-        message: 'Evento actualizado exitosamente',
+    if (data.length > 0) {
+      return res.status(200).json({
+        message: "Se encontraron estos grupos parroquiales en el sistema",
+        resultado: data
       });
     }
+
   } catch (error) {
-    console.error('Error al editar evento:', error);
-    res.status(500).json({ message: 'Error al actualizar evento parroquial' });
+    console.error('Error al subir grupo parroquial:', error);
+
+    // Aquí capturamos el error específico de clave duplicada.
+    if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
+      const dbError = new databaseError(
+        "El documento ya existe en la base de datos.",
+        error.code || error.errno
+      );
+      return res.status(409).json({ message: dbError.message });
+    }
+
+    // Manejo genérico de otros errores de base de datos
+    const dbError = new databaseError(
+      "Error interno del servidor al realizar la consulta",
+      error.code || error.errno
+    );
+    return res.status(500).json({ message: dbError.message });
   }
 };
 
-export const eliminarEvento = async (req, res) => {
-  const { id } = req.params;
+/*
+ejemplo de endpoint:
+{
+"Documento": "12331451",
+"nombre": "juan maldonado",
+"apellido": "serrano perez",
+"grupo": 1005054187, 
+"fecha_de_nacimiento": "2023-10-01", 
+"estado": 1, 
+"imagen" : "esto es una imagen"
+}
+*/
+export const publicarAgentePastoral = async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT imagen FROM eventosparroquiales WHERE id = ?', [id]);
-    if (rows.length === 0) return res.status(404).json({ message: 'Evento no encontrado' });
 
-    const imageUrl = rows[0].imagen;
-    const publicId = imageUrl.split('/').pop().split('.')[0];
+    const { Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen } = req.body
 
-    await cloudinary.uploader.destroy(publicId);
+    const [data] = await pool.query(
+      `INSERT INTO agentes_de_pastoral (Documento,  nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen) VALUES (?, ?, ?, ?, ?,?,?)`,
+      [Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen]
+    );
 
-    await pool.query('DELETE FROM eventosparroquiales WHERE id = ?', [id]);
+    res.status(200).json({
+      message: "Se ha registrado el agente de pastoral correctamente",
+      data: data[0],
+      resultado: { Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen }
+    });
 
-    res.status(200).json({ message: 'Evento eliminado exitosamente' });
+
   } catch (error) {
-    console.error('Error al eliminar evento:', error);
-    res.status(500).json({ message: 'Error interno al eliminar el evento' });
+    console.error('Error al subir agente de pastoral:', error);
+
+    // Aquí capturamos el error específico de clave duplicada.
+    if (error.code === "ER_DUP_ENTRY" || error.errno === 1062) {
+      const dbError = new databaseError(
+        "El documento ya existe en la base de datos.",
+        error.code || error.errno
+      );
+      return res.status(409).json({ message: dbError.message });
+    }
+
+    // Manejo genérico de otros errores de base de datos
+    const dbError = new databaseError(
+      "Error interno del servidor al realizar la consulta",
+      error.code || error.errno
+    );
+    return res.status(500).json({ message: dbError.message });
+  }
+};
+
+
+export const editarAgentePastoral = async (req, res) => {
+  try {
+    const { Documento } = req.params;
+    const { nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen } = req.body;
+
+    const [result] = await pool.query(
+      `UPDATE agentes_de_pastoral SET nombre = ?, apellido = ?, grupo = ?, fecha_de_nacimiento = ?, estado = ?, imagen = ? WHERE Documento = ?`,
+      [nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen, Documento]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "No se encontró el agente de pastoral con el documento proporcionado" });
+    }
+
+    res.status(200).json({
+      message: "Agente de pastoral actualizado correctamente",
+      resultado: { Documento, nombre, apellido, grupo, fecha_de_nacimiento, estado, imagen }
+    });
+  } catch (error) {
+    console.error('Error al editar agente de pastoral:', error);
+    return res.status(500).json({ message: "Error interno del servidor al actualizar el agente de pastoral" });
+  }
+};
+
+
+export const buscarAgentePastoral = async (req, res) => {
+  try {
+    const { Documento } = req.params;
+
+    const [rows] = await pool.query(
+      `SELECT * FROM agentes_de_pastoral WHERE Documento = ?`,
+      [Documento]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No se encontró el agente de pastoral con el documento proporcionado" });
+    }
+
+    res.status(200).json({
+      message: "Agente de pastoral encontrado",
+      resultado: rows[0]
+    });
+  } catch (error) {
+    console.error('Error al buscar agente de pastoral:', error);
+    return res.status(500).json({ message: "Error interno del servidor al buscar el agente de pastoral" });
   }
 };
