@@ -1,4 +1,4 @@
-import { db } from '../db.js';
+import { pool } from '../db.js';
 import cloudinary from 'cloudinary';
 
 export const crearEvento = async (req, res) => {
@@ -16,7 +16,7 @@ export const crearEvento = async (req, res) => {
       (error, result) => {
         if (error) return res.status(500).send(error);
 
-        db.query(
+        pool.query(
           'INSERT INTO eventosparroquiales (nombre, hora, descripcion, imagen) VALUES (?, ?, ?, ?)',
           [nombre, hora, descripcion, result.secure_url],
           (err, results) => {
@@ -43,7 +43,7 @@ export const crearEvento = async (req, res) => {
 };
 
 export const obtenerEventos = (req, res) => {
-  db.query('SELECT * FROM eventosparroquiales', (err, results) => {
+  pool.query('SELECT * FROM eventosparroquiales', (err, results) => {
     if (err) return res.status(500).send(err);
     res.status(200).send(results);
   });
@@ -52,7 +52,7 @@ export const obtenerEventos = (req, res) => {
 export const obtenerEventoPorId = (req, res) => {
   const id = req.params.id;
 
-  db.query('SELECT * FROM eventosparroquiales WHERE id = ?', [id], (err, results) => {
+  pool.query('SELECT * FROM eventosparroquiales WHERE id = ?', [id], (err, results) => {
     if (err) return res.status(500).send(err);
     if (results.length === 0) return res.status(404).send('Evento no encontrado');
     res.status(200).send(results[0]);
@@ -74,7 +74,7 @@ export const editarEvento = async (req, res) => {
         (error, result) => {
           if (error) return res.status(500).send(error);
 
-          db.query(
+          pool.query(
             'UPDATE eventosparroquiales SET nombre = ?, hora = ?, descripcion = ?, imagen = ? WHERE id = ?',
             [nombre, hora, descripcion, result.secure_url, id],
             (err) => {
@@ -95,13 +95,13 @@ export const editarEvento = async (req, res) => {
 
       uploadStream.end(file.buffer);
     } else {
-      db.query(
+      pool.query(
         'UPDATE eventosparroquiales SET nombre = ?, hora = ?, descripcion = ? WHERE id = ?',
         [nombre, hora, descripcion, id],
         (err) => {
           if (err) return res.status(500).send(err);
 
-          db.query('SELECT * FROM eventosparroquiales WHERE id = ?', [id], (err, results) => {
+          pool.query('SELECT * FROM eventosparroquiales WHERE id = ?', [id], (err, results) => {
             if (err) return res.status(500).send(err);
             if (results.length === 0) return res.status(404).send('Evento no encontrado');
             res.status(200).send({
@@ -121,7 +121,7 @@ export const eliminarEvento = (req, res) => {
   const id = req.params.id;
 
   try {
-    db.query('SELECT imagen FROM eventosparroquiales WHERE id = ?', [id], (err, results) => {
+    pool.query('SELECT imagen FROM eventosparroquiales WHERE id = ?', [id], (err, results) => {
       if (err) return res.status(500).send(err);
       if (results.length === 0) return res.status(404).send('Evento no encontrado');
 
@@ -131,7 +131,7 @@ export const eliminarEvento = (req, res) => {
       cloudinary.uploader.destroy(publicId, (error, result) => {
         if (error) return res.status(500).send(error);
 
-        db.query('DELETE FROM eventosparroquiales WHERE id = ?', [id], (err) => {
+        pool.query('DELETE FROM eventosparroquiales WHERE id = ?', [id], (err) => {
           if (err) return res.status(500).send(err);
           res.status(200).send({ message: 'Evento eliminado exitosamente' });
         });
