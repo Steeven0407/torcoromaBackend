@@ -8,6 +8,7 @@ import index from './routes/index.routes.js'
 import eventos from './routes/eventosNoticias.routes.js'
 import eventosParroquialesRoutes from './routes/eventosParroquiales.routes.js'
 import gruposParroquiales from './routes/gruposparroquiales.routes.js'
+import { crearEvento } from './controllers/eventosParroquiales.controller.js';
 
 import cors from 'cors'
 import multer from 'multer';
@@ -19,9 +20,7 @@ const app = express()
 app.use('/uploads', express.static('uploads'));
 
 app.use(express.json())
-app.use(cors({
-    origin: ['http://localhost:5173','https://parroquia-torcoroma-h0xzo1ro5-amadrianas-projects.vercel.app']
-}))
+app.use(cors({}))
 app.use(express.urlencoded({ extended: true }));
 
 // Cloudinary
@@ -33,6 +32,7 @@ cloudinary.config({
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+app.post('/eventos', upload.single('imagen'), crearEvento);
 
 
 app.use(partidas)
